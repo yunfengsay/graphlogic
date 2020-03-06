@@ -1,7 +1,5 @@
-//import {h} from "src/vnode"
-import {App} from  "./src"
-const TextDom = /\bspan\b|\bp\b|\bh[1-6]\b/
-function render(vnode, container) {
+
+export const render = function(vnode, container) {
 	let dom;
 	if(vnode.elementName){
 		dom = document.createElement(vnode.elementName)	
@@ -26,8 +24,3 @@ function render(vnode, container) {
 	return dom
 }
 
-window.onload = function(){
-	const root = document.getElementById('root')
-	console.log(App)
-	render(App, root)
-}

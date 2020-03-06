@@ -117,15 +117,72 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/vnode/index.js":[function(require,module,exports) {
+})({"src/packages/vx/render.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.h = void 0;
+exports.render = void 0;
 
-var h = function h(tag, attrs) {
+var render = function render(vnode, container) {
+  var dom;
+
+  if (vnode.elementName) {
+    dom = document.createElement(vnode.elementName);
+  } else {
+    dom = document.createTextNode(vnode);
+    return dom;
+  } // 设置属性
+
+
+  for (var attrName in vnode.attributes) {
+    var attrValue = vnode.attributes[attrName];
+    if (attrName === 'className') attrName = 'class';
+    dom.setAttribute(attrName, attrValue);
+  }
+
+  if (vnode.children) {
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = vnode.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var item = _step.value;
+        dom.appendChild(render(item));
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return != null) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+  }
+
+  console.log(dom);
+  if (container) container.appendChild(dom);
+  return dom;
+};
+
+exports.render = render;
+},{}],"src/packages/vx/vnode/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.h = h;
+
+function h(tag, attrs) {
   for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     children[_key - 2] = arguments[_key];
   }
@@ -135,10 +192,30 @@ var h = function h(tag, attrs) {
     attrs: attrs,
     children: children
   };
-};
+}
+},{}],"src/packages/vx/index.js":[function(require,module,exports) {
+"use strict";
 
-exports.h = h;
-},{}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "render", {
+  enumerable: true,
+  get: function () {
+    return _render.render;
+  }
+});
+Object.defineProperty(exports, "h", {
+  enumerable: true,
+  get: function () {
+    return _vnode.h;
+  }
+});
+
+var _render = require("./render");
+
+var _vnode = require("./vnode");
+},{"./render":"src/packages/vx/render.js","./vnode":"src/packages/vx/vnode/index.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -205,110 +282,53 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"src/index.css":[function(require,module,exports) {
+},{"./bundle-url":"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"demo/index.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"src/index.js":[function(require,module,exports) {
+},{"_css_loader":"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"demo/index.js":[function(require,module,exports) {
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.App = void 0;
-
-var _vnode = require("./vnode");
+var _vx = require("../src/packages/vx");
 
 require("./index.css");
 
-var Name = 'yunfengsay';
-var App = {
-  elementName: "section",
-  attributes: {
-    className: "title"
-  },
-  children: [{
-    elementName: "time",
-    attributes: {},
-    children: [new Date()]
-  }, {
-    elementName: "div",
-    attributes: {},
-    children: [Name]
-  }, {
-    elementName: "div",
-    attributes: {},
-    children: [Math.random(), {
-      elementName: "p",
-      attributes: {},
-      children: ["math.random\uD83D\uDC46"]
-    }]
-  }]
-};
-exports.App = App;
-},{"./vnode":"src/vnode/index.js","./index.css":"src/index.css"}],"main.js":[function(require,module,exports) {
-"use strict";
-
-var _src = require("./src");
-
 //import {h} from "src/vnode"
 var TextDom = /\bspan\b|\bp\b|\bh[1-6]\b/;
+var Name = 'yunfengsay';
 
-function render(vnode, container) {
-  var dom;
-
-  if (vnode.elementName) {
-    dom = document.createElement(vnode.elementName);
-  } else {
-    dom = document.createTextNode(vnode);
-    return dom;
-  } // 设置属性
-
-
-  for (var attrName in vnode.attributes) {
-    var attrValue = vnode.attributes[attrName];
-    if (attrName === 'className') attrName = 'class';
-    dom.setAttribute(attrName, attrValue);
-  }
-
-  if (vnode.children) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
-
-    try {
-      for (var _iterator = vnode.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var item = _step.value;
-        dom.appendChild(render(item));
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator.return != null) {
-          _iterator.return();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-  }
-
-  console.log(dom);
-  if (container) container.appendChild(dom);
-  return dom;
-}
+var App = function App() {
+  return {
+    elementName: "section",
+    attributes: {
+      className: "title"
+    },
+    children: [{
+      elementName: "time",
+      attributes: {},
+      children: [new Date()]
+    }, {
+      elementName: "div",
+      attributes: {},
+      children: [Name]
+    }, {
+      elementName: "div",
+      attributes: {},
+      children: [Math.random(), {
+        elementName: "p",
+        attributes: {},
+        children: ["math.random\uD83D\uDC46"]
+      }]
+    }]
+  };
+};
 
 window.onload = function () {
   var root = document.getElementById('root');
-  console.log(_src.App);
-  render(_src.App, root);
+  (0, _vx.render)(App(), root);
 };
-},{"./src":"src/index.js"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../src/packages/vx":"src/packages/vx/index.js","./index.css":"demo/index.css"}],"../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -336,7 +356,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62166" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52485" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -511,5 +531,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.js"], null)
-//# sourceMappingURL=/main.1f19ae8e.js.map
+},{}]},{},["../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","demo/index.js"], null)
+//# sourceMappingURL=/demo.b94efa84.js.map
